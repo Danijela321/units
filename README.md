@@ -1,5 +1,11 @@
 "# units" 
 
+
+Spring Boot 3
+Java 17
+Maven
+
+
 Request
 POST:
 http://localhost:8080/goteborg.se/api/
@@ -41,6 +47,8 @@ http://localhost:8080/goteborg.se/api/id/unit2
 Get by category
 http://localhost:8080/goteborg.se/api/category/fritidsgård
 
+get only unitId and total visits
+http://localhost:8080/goteborg.se/api/units
 
 PUT
 http://localhost:8080/goteborg.se/api/unit1

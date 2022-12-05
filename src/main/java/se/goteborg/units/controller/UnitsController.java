@@ -9,8 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.goteborg.units.model.Units;
 import se.goteborg.units.services.UnitsServices;
-
-import java.nio.channels.FileChannel;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +60,13 @@ public class UnitsController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-
+    @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
+    @SuppressWarnings("null")
+    @Scheduled(cron = "0 0 3 * * *")
+    @GetMapping(value = "/units")
+    public ResponseEntity< Map<String,Integer> >getUnitsAndVisitsAt3am() {
+        return unitsServices.transferTotalVisitsFromTableUnitsAtMidnight().map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
 
 }

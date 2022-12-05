@@ -5,8 +5,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import se.goteborg.units.model.Units;
 import se.goteborg.units.repository.UnitsRepository;
-
-import java.nio.channels.FileChannel;
 import java.util.*;
 
 @Service
@@ -31,11 +29,18 @@ public class UnitsServices {
     }
 
     public Optional<List<Units>> findAllUnits() {
-        var findAll = unitsRepository.findAll();
-        if (findAll.isEmpty()) {
+        List<Units> findAll = unitsRepository.findAll();
+        List<Units> findAllplusOneVisits= new ArrayList<Units>();
+
+        for(int i=0;i<findAll.size();i++){
+            findAllplusOneVisits.add(updateTotalVisitsColumn(findAll.get(i)).get());
+        }
+
+        if (findAllplusOneVisits.isEmpty()) {
             return Optional.empty();
         } else {
-            return Optional.of(findAll);
+           // return Optional.of(findAll);
+              return Optional.of(findAllplusOneVisits);
         }
     }
 
@@ -58,7 +63,7 @@ public class UnitsServices {
 
 
     public Optional<List<Units>> findUnitsByCategory(String oneCategory) {
-        List<Units> allUnits = findAllUnits().get();
+        List<Units> allUnits = unitsRepository.findAll();
         List<Units> foundedUnits = new ArrayList<Units>();
         List<Units> updateradUnits = new ArrayList<Units>();
 
@@ -108,23 +113,42 @@ public class UnitsServices {
         }
     }
 
+
+/*
     @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
     @SuppressWarnings("null")
     // 1=secund , 0=minut, 0= hours, *-dayOfTheMonth *-month *-Day
-    @Scheduled(cron = "0 58 14 * * *")
-    private Optional<Map<String, Integer>> transferTotalVisitsFromTableUnitsAtMidnight() {
+    @Scheduled(cron = "0 50 15 * * *")
+    */
+    public Optional<Map<String, Integer>> transferTotalVisitsFromTableUnitsAtMidnight() {
         List<Units> allUnits = unitsRepository.findAll();
         Map<String, Integer> allUnitsAndVisits = new HashMap<String, Integer>();
         for (int i = 0; i < allUnits.size(); i++) {
             allUnitsAndVisits.put(allUnits.get(i).getId(), allUnits.get(i).getTotalVisits());
         }
-        System.out.println(allUnitsAndVisits);
-        return Optional.of(allUnitsAndVisits);
+        System.out.println("Before"+allUnitsAndVisits);
+          return Optional.of(allUnitsAndVisits);
     }
+/*
+    @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
+    @SuppressWarnings("null")
+    @Scheduled(cron = "0 51 15 * * *")
+    public Optional<Map<String, Integer>> getDataFromTransferTotalVisitsFromTableUnitsAtMidnight() {
+        Map<String, Integer> allUnitsAndVisits=transferTotalVisitsFromTableUnitsAtMidnight();
+        Map<String, Integer> getAllUnitsAndVisits = new HashMap<String, Integer>();
+        Set<Map.Entry<String, Integer>> entries = allUnitsAndVisits.entrySet();
+        for (Map.Entry<String, Integer> mapEntry : entries) {
+            getAllUnitsAndVisits .put(mapEntry.getKey(), mapEntry.getValue());
+        }
+        System.out.println("Transfer before deleting"+getAllUnitsAndVisits);
+        return  Optional.of(getAllUnitsAndVisits);
+    }
+
+*/
 
     @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
     @SuppressWarnings("null")
-    @Scheduled(cron = "0 59 14 * * *")
+    @Scheduled(cron = "0 1 3 * * *")
     private void setTotalVisitsFromTableUnitsToZeroAfterTransferingDataAtMidnight() {
         unitsRepository.setTotalVisitsToZeroAfterTransferingData();
     }

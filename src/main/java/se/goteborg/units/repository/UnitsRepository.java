@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import se.goteborg.units.model.Units;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,6 +18,8 @@ public interface UnitsRepository extends JpaRepository<Units, String> {
     @Modifying
     @Query("UPDATE Units e SET e.totalVisits = 0")
     void setTotalVisitsToZeroAfterTransferingData();
+
+
 }
 
 
