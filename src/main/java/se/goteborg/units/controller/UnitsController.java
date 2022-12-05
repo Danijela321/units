@@ -65,7 +65,7 @@ public class UnitsController {
     @Scheduled(cron = "0 0 3 * * *")
     @GetMapping(value = "/units")
     public ResponseEntity< Map<String,Integer> >getUnitsAndVisitsAt3am() {
-        return unitsServices.transferTotalVisitsFromTableUnitsAtMidnight().map(ResponseEntity::ok)
+        return unitsServices.getDataFromTransferTotalVisitsFromTableUnitsAtMidnight().map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
 
