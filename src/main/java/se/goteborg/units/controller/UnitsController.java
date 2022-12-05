@@ -1,12 +1,41 @@
 package se.goteborg.units.controller;
 
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import se.goteborg.units.model.Units;
+import se.goteborg.units.services.UnitsServices;
+
+import java.util.List;
 
 @RestController
 @Validated
 @RequestMapping("/goteborg.se/api")
 public class UnitsController {
 
+    private final UnitsServices unitsServices;
+
+    public UnitsController(UnitsServices unitsServices) {
+        this.unitsServices = unitsServices;
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<Units> createUnit(@Valid final @RequestBody Units units) {
+        return unitsServices.createUnit(units).map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+    }
+
+    @GetMapping(value = {"/"})
+    public ResponseEntity<List<Units>> getAllUnits() {
+        return unitsServices.findAllUnits().map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NO_CONTENT));
+    }
+
+    @GetMapping(value = "/name/{name}")
+    public ResponseEntity<Units> getUnitsByNamn(@PathVariable(value = "name") String name) {
+        return unitsServices.findUnitsByName(name).map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
