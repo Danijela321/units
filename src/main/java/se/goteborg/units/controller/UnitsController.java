@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import se.goteborg.units.model.Units;
 import se.goteborg.units.services.UnitsServices;
 
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,13 @@ public class UnitsController {
         return unitsServices.createUnit(units).map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Units> updateUnit(@RequestBody Units unit, @PathVariable String id) {
+        return unitsServices.updateUnit(id, unit).map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
 
     @GetMapping(value = {"/"})
     public ResponseEntity<List<Units>> getAllUnits() {

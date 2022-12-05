@@ -40,3 +40,7 @@ http://localhost:8080/goteborg.se/api/id/unit2
 
 Get by category
 http://localhost:8080/goteborg.se/api/category/fritidsgård
+
+
+PUT
+http://localhost:8080/goteborg.se/api/unit1

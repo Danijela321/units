@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import se.goteborg.units.model.Units;
 import se.goteborg.units.repository.UnitsRepository;
 
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,4 +93,18 @@ public class UnitsServices {
     }
 
 
+    public Optional<Units> updateUnit(String id, Units unit) {
+        Optional<Units> existingUnit = unitsRepository.findById(id);
+        if (existingUnit.isPresent()) {
+            return Optional.of(
+                    unitsRepository.save(new Units(unit.getId(),
+                            unit.getName(),
+                            unit.getAddress(),
+                            unit.getCategory(),
+                            unit.getTotalVisits()
+                    )));
+        } else {
+            return Optional.empty();
+        }
+    }
 }
