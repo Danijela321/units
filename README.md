@@ -1,7 +1,7 @@
 "# units" 
 
-
-POST Queries:
+Request
+POST:
 http://localhost:8080/goteborg.se/api/
 {
 "id": "unit1",

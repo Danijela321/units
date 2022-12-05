@@ -27,19 +27,24 @@ public class Units {
 
     @Column(name = "category", nullable = false)
     private List<String> category;
-/*
+
     @Column(name = "total_visits", nullable = false)
     private int totalVisits;
-    */
 
-    public Units(){}
-
-    public Units(@NotNull String id, @NotNull String name, @NotNull String address, List<String> category) {
+    public Units(String id, String name, String address, List<String> category, int totalVisits) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.category = category;
+        this.totalVisits = totalVisits;
     }
+
+
+
+
+    public Units(){}
+
+
 
     public String getId() {
         return id;
@@ -71,5 +76,12 @@ public class Units {
 
     public void setCategory(List<String> category) {
         this.category = category;
+    }
+    public int getTotalVisits() {
+        return totalVisits;
+    }
+
+    public void setTotalVisits(int totalVisits) {
+        this.totalVisits = totalVisits;
     }
 }

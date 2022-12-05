@@ -10,7 +10,6 @@ import java.util.Optional;
 public class UnitsServices {
     private final UnitsRepository unitsRepository;
 
-
     public UnitsServices(UnitsRepository unitsRepository) {
         this.unitsRepository = unitsRepository;
     }
@@ -23,7 +22,8 @@ public class UnitsServices {
             return Optional.of(unitsRepository.save(new Units(units.getId(),
                     units.getName(),
                     units.getAddress(),
-                    units.getCategory()
+                    units.getCategory(),
+                    units.getTotalVisits()
             )));
     }
 
