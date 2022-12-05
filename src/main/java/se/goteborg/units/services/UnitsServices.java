@@ -1,5 +1,7 @@
 package se.goteborg.units.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -9,6 +11,8 @@ import java.util.*;
 
 @Service
 public class UnitsServices {
+    Logger loggerService= LoggerFactory.getLogger(UnitsServices.class);
+
     private final UnitsRepository unitsRepository;
     Map<String, Integer> allUnitsAndVisits=new HashMap<String, Integer>();
 
@@ -19,6 +23,7 @@ public class UnitsServices {
     public Optional<Units> createUnit(Units units) {
         Optional<Units> name = findUnitsByName(units.getName());
         if (name.isPresent()) {
+            loggerService.info("Unit already exists");
             return Optional.empty();
         } else
             return Optional.of(unitsRepository.save(new Units(units.getId(),
@@ -38,26 +43,30 @@ public class UnitsServices {
         }
 
         if (findAllplusOneVisits.isEmpty()) {
+            loggerService.info("There are no units");
             return Optional.empty();
         } else {
+            loggerService.info(findAllplusOneVisits.toString()); //----------
               return Optional.of(findAllplusOneVisits);
         }
     }
 
     public Optional<Units> findUnitsByName(String name) {
       Optional<Units> unit = unitsRepository.findByName(name);
-        if (unit.isPresent())
+        if (unit.isPresent()) {
             return updateTotalVisitsColumn(unit.get());
-        else
-            return Optional.empty();
+        } else{
+            loggerService.info(name+" does not exists");
+            return Optional.empty();}
     }
 
     public Optional<Units> findUnitById(String id) {
         Optional<Units> unit = unitsRepository.findById(id);
-        if (unit.isPresent())
+        if (unit.isPresent()) {
             return updateTotalVisitsColumn(unit.get());
-        else
-            return Optional.empty();
+        } else{
+            loggerService.info(id+" does not exists");
+            return Optional.empty();}
     }
 
 
@@ -75,10 +84,11 @@ public class UnitsServices {
             for (int i = 0; i < foundedUnits.size(); i++)
                 updateradUnits.add(updateTotalVisitsColumn(foundedUnits.get(i)).get());
         }
-        if (!foundedUnits.isEmpty())
-            return Optional.of(updateradUnits);
-        else
-            return Optional.empty();
+        if (!foundedUnits.isEmpty()){
+            return Optional.of(updateradUnits);}
+        else{
+            loggerService.info("There are no units with category: "+ oneCategory);
+            return Optional.empty();}
     }
 
 
@@ -103,7 +113,7 @@ public class UnitsServices {
                             unit.getTotalVisits()
                     )));
         } else {
-            return Optional.empty();
+              return Optional.empty();
         }
     }
 
@@ -114,17 +124,19 @@ public class UnitsServices {
     @Scheduled(cron = "1 0 0 * * *")
     private void transferTotalVisitsFromTableUnitsAtMidnight() {
         allUnitsAndVisits.clear();
+        loggerService.info("After clear:Values of allUnitsAndVisits"+ allUnitsAndVisits);
         List<Units> allUnits = unitsRepository.findAll();
 
         for (int i = 0; i < allUnits.size(); i++) {
             allUnitsAndVisits.put(allUnits.get(i).getId(), allUnits.get(i).getTotalVisits());
         }
-        System.out.println("Before transfer"+allUnitsAndVisits);
+           loggerService.info("Transfer values of id and total visits to method at one second after midnight" +
+                "getDataFromTransferTotalVisitsFromTableUnitsAtMidnight"+ allUnitsAndVisits);
 
     }
 
     public Optional<Map<String, Integer>> getDataFromTransferTotalVisitsFromTableUnitsAtMidnight() {
-       System.out.print("At 3am"+ allUnitsAndVisits);
+          loggerService.info("Values of id and total visits at 3am" +allUnitsAndVisits);
         return  Optional.of(allUnitsAndVisits);
     }
 
@@ -132,6 +144,7 @@ public class UnitsServices {
     @SuppressWarnings("null")
     @Scheduled(cron = "0 1 0 * * *")
     private void setTotalVisitsFromTableUnitsToZeroAfterTransferingDataAtMidnight() {
+        loggerService.info("Delete id and total visits, one minute after midnight");
         unitsRepository.setTotalVisitsToZeroAfterTransferingData();
     }
 }

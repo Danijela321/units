@@ -77,4 +77,15 @@ public class Units {
     public void setTotalVisits(int totalVisits) {
         this.totalVisits = totalVisits;
     }
+
+    @Override
+    public String toString() {
+        return "Units{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", category=" + category +
+                ", totalVisits=" + totalVisits +
+                '}';
+    }
 }
