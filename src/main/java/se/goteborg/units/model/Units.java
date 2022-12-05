@@ -39,12 +39,7 @@ public class Units {
         this.totalVisits = totalVisits;
     }
 
-
-
-
     public Units(){}
-
-
 
     public String getId() {
         return id;

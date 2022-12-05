@@ -34,3 +34,9 @@ http://localhost:8080/goteborg.se/api/
 Get by name
 http://localhost:8080/goteborg.se/api/name/Valhallbadet
 http://localhost:8080/goteborg.se/api/name/Rosen fritidsgård
+
+Get by id
+http://localhost:8080/goteborg.se/api/id/unit2
+
+Get by category
+http://localhost:8080/goteborg.se/api/category/fritidsgård

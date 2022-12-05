@@ -38,4 +38,16 @@ public class UnitsController {
         return unitsServices.findUnitsByName(name).map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+    @GetMapping(value = "/id/{id}")
+    public ResponseEntity<Units> getUnitsById(@PathVariable(value = "id") String id) {
+        return unitsServices.findUnitById(id).map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping(value = "/category/{category}")
+    public ResponseEntity<List<Units>>getUnitsByCategory(@PathVariable(value = "category") String oneCategory) {
+        return unitsServices.findUnitsByCategory(oneCategory).map(ResponseEntity::ok)
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
