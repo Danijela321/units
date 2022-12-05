@@ -1,8 +1,10 @@
 package se.goteborg.units.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.goteborg.units.model.Units;
@@ -10,6 +12,7 @@ import se.goteborg.units.services.UnitsServices;
 
 import java.nio.channels.FileChannel;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -58,4 +61,7 @@ public class UnitsController {
         return unitsServices.findUnitsByCategory(oneCategory).map(ResponseEntity::ok)
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
+
+
 }

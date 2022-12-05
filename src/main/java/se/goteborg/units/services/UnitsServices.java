@@ -1,13 +1,13 @@
 package se.goteborg.units.services;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import se.goteborg.units.model.Units;
 import se.goteborg.units.repository.UnitsRepository;
 
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UnitsServices {
@@ -106,5 +106,26 @@ public class UnitsServices {
         } else {
             return Optional.empty();
         }
+    }
+
+    @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
+    @SuppressWarnings("null")
+    // 1=secund , 0=minut, 0= hours, *-dayOfTheMonth *-month *-Day
+    @Scheduled(cron = "0 58 14 * * *")
+    private Optional<Map<String, Integer>> transferTotalVisitsFromTableUnitsAtMidnight() {
+        List<Units> allUnits = unitsRepository.findAll();
+        Map<String, Integer> allUnitsAndVisits = new HashMap<String, Integer>();
+        for (int i = 0; i < allUnits.size(); i++) {
+            allUnitsAndVisits.put(allUnits.get(i).getId(), allUnits.get(i).getTotalVisits());
+        }
+        System.out.println(allUnitsAndVisits);
+        return Optional.of(allUnitsAndVisits);
+    }
+
+    @ConditionalOnProperty(name = "updating.enabled", matchIfMissing = true)
+    @SuppressWarnings("null")
+    @Scheduled(cron = "0 59 14 * * *")
+    private void setTotalVisitsFromTableUnitsToZeroAfterTransferingDataAtMidnight() {
+        unitsRepository.setTotalVisitsToZeroAfterTransferingData();
     }
 }
